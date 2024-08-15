@@ -5,12 +5,13 @@ class CategoryButtons extends StatelessWidget{
 
   final String title;
   final List<String> products;
-  static String k = '';
+  String k;
 
   const CategoryButtons({
     Key? key, 
     required this.title,
     required this.products,
+    this.k,
   }) : super(key: key);
 
   String CallOptionButtons(productname){
