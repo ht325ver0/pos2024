@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:pos2024/widgets/CategoryButtons.dart';
 
 class OderPage extends StatefulWidget {
   const OderPage({super.key, required this.title});
 
   final String title;
+
+
 
   @override
   State<OderPage> createState() => _OderPage();
@@ -11,6 +14,7 @@ class OderPage extends StatefulWidget {
 
 class _OderPage extends State<OderPage> {
   int selectedItem = 0;
+  String option = '';
 
   void _incrementCounter() {
     setState(() {
@@ -72,52 +76,7 @@ class _OderPage extends State<OderPage> {
                   children: [
                     Container(
                       alignment: const Alignment(-0.9,-0.9),
-                      child: Container(
-                        color: const Color.fromARGB(255, 255, 255, 255),//右の左(注文、単品（二種類かわもも）)
-                        width: 200,
-                        height: 900,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 190,
-                              height: 25,
-                              margin: EdgeInsets.all(3.0),
-                              color:  Color.fromARGB(248, 228, 227, 227),
-                              child: Center(child:Text('ぶい',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
-
-                            ),
-                            ElevatedButton(                            
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(255, 250, 233, 195),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0)
-                                  ),
-                                  minimumSize: const Size(190, 100),
-                                ),
-                                onPressed: () {
-                                  // ボタンが押されたときの処理をここに書く
-                                },
-                                child: const Text("ボタン1"),
-                              ),//もも
-                            Container(
-                              height: 10),
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(255, 250, 233, 195),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0)
-                                  ),
-                                  minimumSize: const Size(190, 100),
-                                ),
-                                onPressed: () {
-                                  // ボタンが押されたときの処理をここに書く
-                                },
-                                child: const Text("ボタン1"),
-                            ),//かわ
-                          ],
-                        ),
-                      ),
+                      child: CategoryButtons(title:'商品名',products:['1','2'], option:option)
                     ),
                     Container(
                       alignment: const Alignment(0,0),

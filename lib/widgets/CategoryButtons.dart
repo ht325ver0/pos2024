@@ -5,19 +5,15 @@ class CategoryButtons extends StatelessWidget{
 
   final String title;
   final List<String> products;
-  String k;
+  String option;
 
-  const CategoryButtons({
+  CategoryButtons({
     Key? key, 
     required this.title,
     required this.products,
-    this.k,
+    this.option = '',
   }) : super(key: key);
 
-  String CallOptionButtons(productname){
-    if()
-    CategoryButtons('あじ',products[i].options);
-  };//作り途中
 
   @override
   Widget build(BuildContext context){
@@ -44,7 +40,7 @@ class CategoryButtons extends StatelessWidget{
                 ),
                 minimumSize: const Size(190, 100),
               ),
-              onPressed: (this.k) => k = products[i],
+              onPressed: () => this.option = products[i],
               child: 
                 Text(products[i]),
             ),
