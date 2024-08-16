@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos2024/widgets/CategoryButtons.dart';
+import 'package:pos2024/models/Product.dart';
 
 class OderPage extends StatefulWidget {
   const OderPage({super.key, required this.title});
@@ -14,7 +15,12 @@ class OderPage extends StatefulWidget {
 
 class _OderPage extends State<OderPage> {
   int selectedItem = 0;
-  String option = '';
+  ///商品名ボタンで選択された商品の名前
+  
+  Product GrilledChickenThigh = Product(name: '焼き鳥(もも)', stock: 100, prise: 100, options: ['塩','甘口','中辛','辛口','デス']);
+  Product GrilledChickenSkin = Product(name: '焼き鳥(かわ)', stock: 100, prise: 100, options: ['塩','甘口','中辛','辛口','デス']);
+  Product option = Product(name: '', stock: 0, prise: 0, options: []);
+
 
   void _incrementCounter() {
     setState(() {
@@ -76,100 +82,20 @@ class _OderPage extends State<OderPage> {
                   children: [
                     Container(
                       alignment: const Alignment(-0.9,-0.9),
-                      child: CategoryButtons(title:'商品名',products:['1','2'], option:option)
+                      child: CategoryButtons(
+                        title:'商品名',
+                        products:[GrilledChickenThigh.name,GrilledChickenSkin.name], //実装後は変数とかにする
+                        option: option,
+                        P:[GrilledChickenThigh,GrilledChickenSkin],//実装後は変数とかにする
+                      ),
                     ),
                     Container(
-                      alignment: const Alignment(0,0),
-                      child: Container(
-                        color: const Color.fromARGB(255, 255, 255, 255),//真ん中、味
-                        width: 200,
-                        height: 900,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 190,
-                              height: 25,
-                              margin: EdgeInsets.all(3.0),
-                              color:  Color.fromARGB(248, 228, 227, 227),
-                              child: Center(child:Text('あじ',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
-
-                              ),
-                            ElevatedButton(                            
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color.fromARGB(255, 50, 255, 252),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0)
-                                  ),
-                                  minimumSize: const Size(190, 100),
-                                ),
-                                onPressed: () {
-                                  // ボタンが押されたときの処理をここに書く
-                                },
-                                child: const Text("ボタン1"),
-                              ),//もも
-                            Container(
-                              height: 10),
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color.fromARGB(255, 255, 187, 50),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0)
-                                  ),
-                                  minimumSize: const Size(190, 100),
-                                ),
-                                onPressed: () {
-                                  // ボタンが押されたときの処理をここに書く
-                                },
-                                child: const Text("ボタン1"),
-                              ),//かわ
-                              Container(
-                              height: 10),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color.fromARGB(255, 255, 149, 50),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0)
-                                  ),
-                                  minimumSize: const Size(190, 100),
-                                ),
-                                onPressed: () {
-                                  // ボタンが押されたときの処理をここに書く
-                                },
-                                child: const Text("ボタン1"),
-                              ),
-                              Container(
-                              height: 10),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color.fromARGB(255, 255, 111, 50),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0)
-                                  ),
-                                  minimumSize: const Size(190, 100),
-                                ),
-                                onPressed: () {
-                                  // ボタンが押されたときの処理をここに書く
-                                },
-                                child: const Text("ボタン1"),
-                              ),
-                              Container(
-                              height: 10),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color.fromARGB(255, 255, 50, 50),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0)
-                                  ),
-                                  minimumSize: const Size(190, 100),
-                                ),
-                                onPressed: () {
-                                  // ボタンが押されたときの処理をここに書く
-                                },
-                                child: const Text("ボタン1"),
-                              ),
-                          ],
-                        ),
+                      alignment: const Alignment(-0.9,-0.9),
+                      child: CategoryButtons(
+                        title: 'あじ',
+                        products: option.options, 
+                        option: option,
+                        P: [GrilledChickenThigh,GrilledChickenSkin],//実装後は変数とかにする
                       ),
                     ),
                     Container(

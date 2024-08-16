@@ -3,16 +3,31 @@ import '../models/Product.dart';
 
 class CategoryButtons extends StatelessWidget{
 
+  ///商品名(String)
   final String title;
+  ///オプション(List<String>)
   final List<String> products;
-  String option;
+  ///どのボタンが押されたか、商品が格納される変数(Productクラス)
+  Product option;
+  ///現在登録されている商品のリスト(List<Product>)
+  final List<Product> P;
 
   CategoryButtons({
     Key? key, 
     required this.title,
     required this.products,
-    this.option = '',
+    required this.option,
+    required this.P,
   }) : super(key: key);
+
+  Product getProductClass(name){
+    for(int i = 0; i < P.length; i++){
+      if(name == this.P[i].name){
+        return P[i];
+      }
+    }
+    return P[0];
+  }
 
 
   @override
@@ -40,7 +55,7 @@ class CategoryButtons extends StatelessWidget{
                 ),
                 minimumSize: const Size(190, 100),
               ),
-              onPressed: () => this.option = products[i],
+              onPressed: () => option = getProductClass(products[i]),
               child: 
                 Text(products[i]),
             ),
