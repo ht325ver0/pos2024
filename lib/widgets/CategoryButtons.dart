@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import '../models/Product.dart';
 
-class CategoryButtons extends StatelessWidget{
+class CategoryButtons extends StatefulWidget{
+
+  CategoryButtons({
+    Key? key, 
+    required this.title,
+    required this.products,
+    required this.option,
+    required this.P,
+    required this.buttonUpdate,
+  }) : super(key: key);
 
   ///商品名(String)
   final String title;
@@ -11,24 +20,24 @@ class CategoryButtons extends StatelessWidget{
   Product option;
   ///現在登録されている商品のリスト(List<Product>)
   final List<Product> P;
+  ///更新するための関数名(Function)
+  Function buttonUpdate;
 
-  CategoryButtons({
-    Key? key, 
-    required this.title,
-    required this.products,
-    required this.option,
-    required this.P,
-  }) : super(key: key);
+  @override
+  State<CategoryButtons> createState() => _CategoryButtonsState();
+}
 
-  Product getProductClass(name){
-    for(int i = 0; i < P.length; i++){
-      if(name == this.P[i].name){
-        return P[i];
+class _CategoryButtonsState extends State<CategoryButtons>{
+
+///商品名(String)を引数に、その商品のクラスを返す
+  Product getProductClass(String name){
+    for(int i = 0; i < widget.P.length; i++){
+      if(name == widget.P[i].name){
+        return widget.P[i];
       }
     }
-    return P[0];
+    return widget.P[0];
   }
-
 
   @override
   Widget build(BuildContext context){
@@ -44,20 +53,28 @@ class CategoryButtons extends StatelessWidget{
             height: 25,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
-            child: Center(child:Text(this.title, selectionColor: Color.fromARGB(255, 255, 254, 254),)),
+            child: Center(child:Text(widget.title, selectionColor: Color.fromARGB(255, 255, 254, 254),)),
           ),
-          for(int i = 0; i < this.products.length; i++)...[
+          for(int i = 0; i < widget.products.length; i++)...[
             ElevatedButton(                            
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 250, 233, 195),
+                backgroundColor: widget.products[i] == widget.option.name
+                    ? Color.fromARGB(255, 165, 154, 129)
+                    : Color.fromARGB(255, 250, 233, 195),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0)
+                  borderRadius: BorderRadius.circular(0),
                 ),
                 minimumSize: const Size(190, 100),
               ),
-              onPressed: () => option = getProductClass(products[i]),
+              onPressed: () {
+                Product selectedProduct = getProductClass(widget.products[i]);
+                setState(() {
+                  widget.option = selectedProduct;
+                });
+                widget.buttonUpdate(selectedProduct);
+              },
               child: 
-                Text(products[i]),
+                Text(widget.products[i]),
             ),
             Container(height: 10),
           ]

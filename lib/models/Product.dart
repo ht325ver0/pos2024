@@ -7,7 +7,7 @@ class Product{
   final int stock;
   ///商品の原価(int)
   final int prise;
-  ///商品のオプション名をキー、それに対応して+-する価格(Map<String, int>)
+  ///商品のオプション名のリスト(List<int>)
   final List<String> options;
 
   const Product({

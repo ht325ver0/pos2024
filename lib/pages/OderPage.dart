@@ -15,19 +15,18 @@ class OderPage extends StatefulWidget {
 
 class _OderPage extends State<OderPage> {
   int selectedItem = 0;
-  ///商品名ボタンで選択された商品の名前
-  
+
   Product GrilledChickenThigh = Product(name: '焼き鳥(もも)', stock: 100, prise: 100, options: ['塩','甘口','中辛','辛口','デス']);
   Product GrilledChickenSkin = Product(name: '焼き鳥(かわ)', stock: 100, prise: 100, options: ['塩','甘口','中辛','辛口','デス']);
-  Product option = Product(name: '', stock: 0, prise: 0, options: []);
+  Product Mo = Product(name: 'もちょ', stock: 100, prise: 100, options: ['あん','カスタ']);
+  ///商品名ボタンで選択された商品のオブジェクト
+  Product selected_product = Product(name: '', stock: 0, prise: 0, options: []);
 
-
-  void _incrementCounter() {
-    setState(() {
-     
-
-    });
-  }
+void updateWidget(Product newProduct) {
+  setState(() {
+    selected_product = newProduct;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +53,7 @@ class _OderPage extends State<OderPage> {
                     alignment: const Alignment(-0.9,-0.9),
                     child: Container(
                       color: const Color.fromARGB(255, 255, 255, 255),//・合計金額・決済に進むためのボタン
-                      width: 600,
+                      width: 450,
                       height: 200,
                       child: Text('合計金額'),
                     ),
@@ -63,8 +62,8 @@ class _OderPage extends State<OderPage> {
                     alignment: const Alignment(0,0),
                     child: Container(
                       color: const Color.fromARGB(255, 255, 255, 255), //カート（注文したやつが入る。入ってる商品をタッチしたら編集できる（スクロールバーがもう一回出てくる））
-                      width: 600,
-                      height: 550,
+                      width: 450,
+                      height: 500,
                       child: Text('カート'),
                     ),
                   ),
@@ -84,18 +83,20 @@ class _OderPage extends State<OderPage> {
                       alignment: const Alignment(-0.9,-0.9),
                       child: CategoryButtons(
                         title:'商品名',
-                        products:[GrilledChickenThigh.name,GrilledChickenSkin.name], //実装後は変数とかにする
-                        option: option,
-                        P:[GrilledChickenThigh,GrilledChickenSkin],//実装後は変数とかにする
+                        products:[GrilledChickenThigh.name,GrilledChickenSkin.name,Mo.name], //実装後は変数とかにする
+                        option: selected_product,
+                        P:[GrilledChickenThigh,GrilledChickenSkin,Mo],//実装後は変数とかにする
+                        buttonUpdate: updateWidget,
                       ),
                     ),
                     Container(
                       alignment: const Alignment(-0.9,-0.9),
                       child: CategoryButtons(
                         title: 'あじ',
-                        products: option.options, 
-                        option: option,
-                        P: [GrilledChickenThigh,GrilledChickenSkin],//実装後は変数とかにする
+                        products: selected_product.options,
+                        option: selected_product,
+                        P: [GrilledChickenThigh,GrilledChickenSkin,Mo],//実装後は変数とかにする
+                        buttonUpdate: updateWidget,
                       ),
                     ),
                     Container(
