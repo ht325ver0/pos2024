@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pos2024/widgets/CategoryButtons.dart';
+import 'package:pos2024/widgets/CategoryButton.dart';
 import 'package:pos2024/models/Product.dart';
+import 'package:pos2024/widgets/OptionButton.dart';
 
 class OderPage extends StatefulWidget {
   const OderPage({super.key, required this.title});
@@ -20,11 +21,12 @@ class _OderPage extends State<OderPage> {
   Product GrilledChickenSkin = Product(name: '焼き鳥(かわ)', stock: 100, prise: 100, options: ['塩','甘口','中辛','辛口','デス']);
   Product Mo = Product(name: 'もちょ', stock: 100, prise: 100, options: ['あん','カスタ']);
   ///商品名ボタンで選択された商品のオブジェクト
-  Product selected_product = Product(name: '', stock: 0, prise: 0, options: []);
+  Product selectedProductObject = Product(name: '', stock: 0, prise: 0, options: []);
+  String selectedProductOption = '';
 
 void updateWidget(Product newProduct) {
   setState(() {
-    selected_product = newProduct;
+    selectedProductObject = newProduct;
   });
 }
 
@@ -81,23 +83,22 @@ void updateWidget(Product newProduct) {
                   children: [
                     Container(
                       alignment: const Alignment(-0.9,-0.9),
-                      child: CategoryButtons(
+                      child: CategoryButton(
                         title:'商品名',
                         products:[GrilledChickenThigh.name,GrilledChickenSkin.name,Mo.name], //実装後は変数とかにする
-                        option: selected_product,
+                        selectedProduct: selectedProductObject,
                         P:[GrilledChickenThigh,GrilledChickenSkin,Mo],//実装後は変数とかにする
                         buttonUpdate: updateWidget,
                       ),
                     ),
                     Container(
                       alignment: const Alignment(-0.9,-0.9),
-                      child: CategoryButtons(
-                        title: 'あじ',
-                        products: selected_product.options,
-                        option: selected_product,
-                        P: [GrilledChickenThigh,GrilledChickenSkin,Mo],//実装後は変数とかにする
-                        buttonUpdate: updateWidget,
-                      ),
+                      child: OptionButton(
+                        onOptionSelected: updateWidget,
+                        title: 'オプション',
+                        options: selectedProductObject.options,
+                        selectedOption: selectedProductOption,
+                        )
                     ),
                     Container(
                       alignment: const Alignment(0.9,-1),
@@ -120,7 +121,7 @@ void updateWidget(Product newProduct) {
                                     height: 25,
                                     margin: const EdgeInsets.all(3.0),
                                     color: const Color.fromARGB(248, 228, 227, 227),
-                                    child: const Center(child:Text('ぶい',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
+                                    child: const Center(child:Text('オプション',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
                                   ),
                                   Container(
                                     color: const Color.fromARGB(255, 255, 255, 255),

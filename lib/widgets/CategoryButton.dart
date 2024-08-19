@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../models/Product.dart';
 
-class CategoryButtons extends StatefulWidget{
+class CategoryButton extends StatefulWidget{
 
-  CategoryButtons({
+  CategoryButton({
     Key? key, 
     required this.title,
     required this.products,
-    required this.option,
+    required this.selectedProduct,
     required this.P,
     required this.buttonUpdate,
   }) : super(key: key);
@@ -17,17 +17,17 @@ class CategoryButtons extends StatefulWidget{
   ///オプション(List<String>)
   final List<String> products;
   ///どのボタンが押されたか、商品が格納される変数(Productクラス)
-  Product option;
+  Product selectedProduct;
   ///現在登録されている商品のリスト(List<Product>)
-  final List<Product> P;
+  List<Product> P;
   ///更新するための関数名(Function)
   Function buttonUpdate;
 
   @override
-  State<CategoryButtons> createState() => _CategoryButtonsState();
+  State<CategoryButton> createState() => _CategoryButton();
 }
 
-class _CategoryButtonsState extends State<CategoryButtons>{
+class _CategoryButton extends State<CategoryButton>{
 
 ///商品名(String)を引数に、その商品のクラスを返す
   Product getProductClass(String name){
@@ -36,7 +36,18 @@ class _CategoryButtonsState extends State<CategoryButtons>{
         return widget.P[i];
       }
     }
-    return widget.P[0];
+    return Product(name: '', stock: 0, prise: 0, options: []);
+  }
+
+  void onButtonPressed(String productName) {
+    Product selected = getProductClass(productName);
+    setState(() {
+      if (productName == widget.selectedProduct.name) {
+        selected = Product(name: '', stock: 0, prise: 0, options: []);
+      }
+      widget.selectedProduct = selected;
+    });
+    widget.buttonUpdate(selected);
   }
 
   @override
@@ -58,7 +69,7 @@ class _CategoryButtonsState extends State<CategoryButtons>{
           for(int i = 0; i < widget.products.length; i++)...[
             ElevatedButton(                            
               style: ElevatedButton.styleFrom(
-                backgroundColor: widget.products[i] == widget.option.name
+                backgroundColor: widget.products[i] == widget.selectedProduct.name
                     ? Color.fromARGB(255, 165, 154, 129)
                     : Color.fromARGB(255, 250, 233, 195),
                 shape: RoundedRectangleBorder(
@@ -66,13 +77,7 @@ class _CategoryButtonsState extends State<CategoryButtons>{
                 ),
                 minimumSize: const Size(190, 100),
               ),
-              onPressed: () {
-                Product selectedProduct = getProductClass(widget.products[i]);
-                setState(() {
-                  widget.option = selectedProduct;
-                });
-                widget.buttonUpdate(selectedProduct);
-              },
+              onPressed: () => onButtonPressed(widget.products[i]),
               child: 
                 Text(widget.products[i]),
             ),
@@ -80,7 +85,6 @@ class _CategoryButtonsState extends State<CategoryButtons>{
           ]
         ]
       ),
-    );
-                    
+    );        
   }
 }
