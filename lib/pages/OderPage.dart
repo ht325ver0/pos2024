@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:pos2024/models/SelectedProduct.dart';
 import 'package:pos2024/widgets/CategoryButton.dart';
 import 'package:pos2024/models/Product.dart';
 import 'package:pos2024/widgets/OptionButton.dart';
 import 'package:pos2024/widgets/Quantity.dart';
+import 'package:pos2024/models/SelectedProduct.dart';
+import 'package:pos2024/widgets/Cart.dart';
 
 class OderPage extends StatefulWidget {
   const OderPage({super.key, required this.title});
@@ -23,14 +26,31 @@ class _OderPage extends State<OderPage> {
   Product Mo = Product(name: 'もちょ', stock: 100, prise: 100, options: ['あん','カスタ']);
   ///商品名ボタンで選択された商品のオブジェクト
   Product selectedProductObject = Product(name: '', stock: 0, prise: 0, options: []);
-  String selectedProductOption = '';
-  int selectedProductQuantity = 0;
+  int selectedProductOption = 0;
+  int selectedProductQuantity = 1;
+  String memo = '';
+  List<SelectedProduct> selectedProducts = [];
 
-void updateWidget(Product newProduct) {
-  setState(() {
-    selectedProductObject = newProduct;
-  });
-}
+  void updateName(Product newProduct) {
+    setState(() {
+      selectedProductObject = newProduct;
+      selectedProductOption = 0;
+    });
+  }
+  void updateOption(int newOption) {
+    setState(() {
+      selectedProductOption = newOption;
+    });
+  }
+
+
+  void getObject(){
+    setState(() {
+      selectedProducts.add(
+        SelectedProduct(object:this.selectedProductObject, optionNumber:this.selectedProductOption, oderPieces: selectedProductQuantity, memo: this.memo)
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +84,7 @@ void updateWidget(Product newProduct) {
                   ),
                   Container(
                     alignment: const Alignment(0,0),
-                    child: Container(
-                      color: const Color.fromARGB(255, 255, 255, 255), //カート（注文したやつが入る。入ってる商品をタッチしたら編集できる（スクロールバーがもう一回出てくる））
-                      width: 450,
-                      height: 500,
-                      child: Text('カート'),
-                    ),
+                    child: CartWidget(selectedProducts: selectedProducts),
                   ),
                 ],
               ),
@@ -90,13 +105,13 @@ void updateWidget(Product newProduct) {
                         products:[GrilledChickenThigh.name,GrilledChickenSkin.name,Mo.name], //実装後は変数とかにする
                         selectedProduct: selectedProductObject,
                         P:[GrilledChickenThigh,GrilledChickenSkin,Mo],//実装後は変数とかにする
-                        buttonUpdate: updateWidget,
+                        buttonUpdate: updateName,
                       ),
                     ),
                     Container(
                       alignment: const Alignment(-0.9,-0.9),
                       child: OptionButton(
-                        onOptionSelected: updateWidget,
+                        onOptionSelected: updateOption,
                         title: 'オプション',
                         options: selectedProductObject.options,
                         selectedOption: selectedProductOption,
@@ -109,23 +124,82 @@ void updateWidget(Product newProduct) {
                         width: 390,
                         height: 800,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Quantity(
                               title: '個数', 
-                              index: selectedProductQuantity
+                              index: selectedProductQuantity,
+                              onQuantityChange: (newQuantity) {
+                                setState(() {
+                                  selectedProductQuantity = newQuantity;
+                                });
+                              },
                             ),
+                            Container(height: 5,),
                             Container(
                               color: const Color.fromARGB(255, 255, 255, 255),
                               width: 390,
-                              height: 100,
-                              child: TextField(),
+                              height: 200,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 380,
+                                    height: 25,
+                                    margin: const EdgeInsets.all(3.0),
+                                    color: const Color.fromARGB(248, 228, 227, 227),
+                                    child: Center(child:Text('メモ',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
+                                  ),
+                                  TextFormField(
+                                    maxLines: 5,
+                                    onChanged: (value){
+                                      memo = value;
+                                    },
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                    keyboardType: TextInputType.multiline,
+                                    decoration: InputDecoration(
+                                      hintText: "Text",
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                        borderSide: BorderSide(
+                                          width: 0.5,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                        borderSide: BorderSide(
+                                          width: 0.5,
+                                        )
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
+                            Container(height:5),
+                            Container(height: 83, width: 390, color: Color.fromARGB(255, 255, 255, 255),),
+                            Container(height:5),
                             Container(
                               width: 390,
-                              height: 50,
-                              margin: const EdgeInsets.all(3.0),
-                              color: const Color.fromARGB(248, 228, 227, 227),
+                              height: 195,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              child:  Container(
+                                width: 100,
+                                height: 120,
+                                child: ElevatedButton(                         
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(0),
+                                    ),
+                                    minimumSize: const Size(10,10),
+                                  ),
+                                  onPressed: () => getObject(),
+                                  child: 
+                                    Text('カートに追加'),
+                                ),
+                              ),
                             ),
                           ],
                         ),

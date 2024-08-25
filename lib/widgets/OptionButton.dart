@@ -18,7 +18,7 @@ class OptionButton extends StatefulWidget{
   final List<String> options;
   
   /// 現在選択されているオプション
-  String selectedOption;
+  int? selectedOption;
   
   /// オプションが選択されたときのコールバック関数
   final Function onOptionSelected;
@@ -29,15 +29,15 @@ class OptionButton extends StatefulWidget{
 
 class _OptionButton extends State<OptionButton>{
 
-  void onButtonPressed(String optionName) {
-    String selected = optionName;
+  void onButtonPressed(int optionName) {
+    int? selected = optionName;
     setState(() {
       if (optionName == widget.selectedOption) {
-        selected = '';
+        selected = null;
       }
       widget.selectedOption = selected;
     });
-    widget.onOptionSelected;
+    widget.onOptionSelected(widget.selectedOption);
   }
 
 
@@ -65,7 +65,7 @@ class _OptionButton extends State<OptionButton>{
           for (int i = 0; i < widget.options.length; i++) ...[
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: widget.options[i] == widget.selectedOption
+                backgroundColor: i == widget.selectedOption
                     ? const Color.fromARGB(255, 165, 154, 129)
                     : const Color.fromARGB(255, 250, 233, 195),
                 shape: RoundedRectangleBorder(
@@ -73,7 +73,7 @@ class _OptionButton extends State<OptionButton>{
                 ),
                 minimumSize: const Size(190, 100),
               ),
-              onPressed: () => onButtonPressed(widget.options[i]),
+              onPressed: () => onButtonPressed(i),
               child: Text(widget.options[i]),
             ),
             const SizedBox(height: 10),

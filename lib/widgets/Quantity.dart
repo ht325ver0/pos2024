@@ -6,6 +6,7 @@ class Quantity extends StatefulWidget{
     Key? key, 
     required this.title,
     required this.index,
+    required this.onQuantityChange,
   }) : super(key: key);
 
   ///タイトル(String)
@@ -14,17 +15,38 @@ class Quantity extends StatefulWidget{
   ///注文数を代入する(int)
   int index;
 
+  final Function(int) onQuantityChange;
+
   @override
   State<Quantity> createState() => _Quantity();
 }
 
 class _Quantity extends State<Quantity>{
 
+
+  void _incrementCounter() {
+    setState(() {
+      widget.index++;
+      widget.onQuantityChange(widget.index);
+    });
+  }
+
+  void _decrementCounter() {
+    setState(() {
+      if (widget.index > 1) {
+        widget.index--;
+        widget.onQuantityChange(widget.index);
+      }
+    });
+  }
+
+  FixedExtentScrollController controller = FixedExtentScrollController(initialItem:  0);
+
   @override
   Widget build(BuildContext context){
     return  Container(
       width: 390,
-      height: 200,
+      height: 250,
       color: Color.fromARGB(255, 255, 255, 255),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -37,36 +59,76 @@ class _Quantity extends State<Quantity>{
             child: Center(child:Text(widget.title,selectionColor: Color.fromARGB(255, 255, 254, 254),)),
           ),
           Container(
+            height: 20,
+          ),
+          Container(
             color: const Color.fromARGB(255, 255, 255, 255),
             width: 380,
-            height: 100,
-            child: ListWheelScrollView(
-              itemExtent: 70.0,
-              physics: FixedExtentScrollPhysics(), 
-              onSelectedItemChanged: (selectedItem) {
-                setState(() {
-                  widget.index = selectedItem;
-                });
-              },
-              children: [
-                for (var i in List.generate(12, (i) => i))
-                  Container(
-                    color: widget.index == i
-                      ? Color.fromARGB(255, 255, 183, 77)  // 選択されたアイテムの背景色
-                      : Color.fromARGB(255, 111, 255, 113), // その他のアイテムの背景色
-                    width: 200,
-                    child: Center(
-                      child: Text(
-                        (i + 1).toString(),
-                        style: TextStyle(
-                          fontSize: widget.index == i ? 24.0 : 18.0, // 選択されたアイテムのフォントサイズ
-                          fontWeight: widget.index == i ? FontWeight.bold : FontWeight.normal, // 選択されたアイテムのフォントの太さ
-                          color: widget.index == i ? Colors.black : Colors.white, // 選択されたアイテムのフォントカラー
+            height: 125,
+            child: Expanded(
+              child: ListWheelScrollView(
+                itemExtent: 50,
+                physics: FixedExtentScrollPhysics(), 
+                onSelectedItemChanged: (selectedItem) {
+                  setState(() {
+                    widget.index = selectedItem;
+                    widget.onQuantityChange(widget.index);
+                  });
+                },
+                controller: controller,
+                children: [
+                  for (var i in List.generate(1000, (i) => i))
+                    Container(
+                      decoration: BoxDecoration(
+                        color: widget.index - 1 == i
+                          ? Colors.blueAccent
+                          : Colors.white,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                        border: Border.all(
+                          width: 2,
+                          color: widget.index - 1 == i
+                            ? Colors.blueAccent 
+                            : Colors.grey.shade300,
                         ),
                       ),
-                    ),                    
-                  ), 
-              ]
+                      child: Center(
+                        child: Text(
+                          (i + 1).toString(),
+                          style: TextStyle(
+                            fontSize: widget.index-1 == i ? 24.0 : 18.0, // 選択されたアイテムのフォントサイズ
+                            fontWeight: widget.index-1 == i ? FontWeight.bold : FontWeight.normal, // 選択されたアイテムのフォントの太さ
+                          ),
+                        ),
+                      ),
+                    ),  
+                ],
+              ),
+            ),
+          ),
+          Center(
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.remove),
+                  onPressed: _decrementCounter,
+                  color: Colors.red,
+                  iconSize: 40.0,
+                ),
+                Container(
+                  width: 2,
+                  height: 20,
+                  color: Color.fromARGB(255, 193, 192, 192),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: _incrementCounter,
+                  color: Colors.green,
+                  iconSize: 40.0,
+                ),
+                Container(
+                  child:Text(widget.index.toString())
+                ),
+              ],
             ),
           ),
         ],
@@ -74,5 +136,3 @@ class _Quantity extends State<Quantity>{
     );
   }
 }
-        
- 
