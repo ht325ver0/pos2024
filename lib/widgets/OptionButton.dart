@@ -5,11 +5,17 @@ class OptionButton extends StatefulWidget{
 
   OptionButton({
     Key? key,
+    required this.height,
+    required this.width,
     required this.title,
     required this.options,
     required this.selectedOption,
     required this.onOptionSelected,
   }) : super(key: key);
+
+  final double height;
+
+  final double width;
 
   /// Gridのタイトル
   final String title;
@@ -45,8 +51,8 @@ class _OptionButton extends State<OptionButton>{
   Widget build(BuildContext context){
     return Container(
       color: Colors.white,
-      width: 200,
-      height: 900,
+      width: widget.width,
+      height: widget.height,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

@@ -5,12 +5,18 @@ class CategoryButton extends StatefulWidget{
 
   CategoryButton({
     Key? key, 
+    required this.height,
+    required this.width,
     required this.title,
     required this.products,
     required this.selectedProduct,
     required this.P,
     required this.buttonUpdate,
   }) : super(key: key);
+
+  final double height;
+
+  final double width;
 
   ///商品名(String)
   final String title;
@@ -28,6 +34,8 @@ class CategoryButton extends StatefulWidget{
 }
 
 class _CategoryButton extends State<CategoryButton>{
+
+
 
 ///商品名(String)を引数に、その商品のクラスを返す
   Product getProductClass(String name){
@@ -52,10 +60,13 @@ class _CategoryButton extends State<CategoryButton>{
 
   @override
   Widget build(BuildContext context){
+
+
+    
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
-      width: 200,
-      height: 900,
+      width: widget.width,
+      height: widget.height,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

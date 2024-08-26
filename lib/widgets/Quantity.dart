@@ -4,10 +4,16 @@ class Quantity extends StatefulWidget{
 
   Quantity({
     Key? key, 
+    required this.height,
+    required this.width,
     required this.title,
     required this.index,
     required this.onQuantityChange,
   }) : super(key: key);
+
+  final double height;
+
+  final double width;
 
   ///タイトル(String)
   final String title;
@@ -45,8 +51,8 @@ class _Quantity extends State<Quantity>{
   @override
   Widget build(BuildContext context){
     return  Container(
-      width: 390,
-      height: 250,
+      width: widget.width,
+      height: widget.height,
       color: Color.fromARGB(255, 255, 255, 255),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
