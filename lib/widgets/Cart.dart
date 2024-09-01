@@ -7,6 +7,10 @@ class CartWidget extends StatelessWidget {
 
   CartWidget({required this.selectedProducts});
 
+  List getCartList(){
+    return selectedProducts;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(

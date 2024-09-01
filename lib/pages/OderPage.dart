@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos2024/models/SelectedProduct.dart';
+import 'package:pos2024/pages/CasherPage.dart';
 import 'package:pos2024/widgets/CategoryButton.dart';
 import 'package:pos2024/models/Product.dart';
 import 'package:pos2024/widgets/OptionButton.dart';
@@ -8,11 +9,10 @@ import 'package:pos2024/models/SelectedProduct.dart';
 import 'package:pos2024/widgets/Cart.dart';
 
 class OderPage extends StatefulWidget {
-  const OderPage({super.key, required this.title});
+  OderPage({super.key, required this.title, required this.waitingOder});
 
   final String title;
-
-
+  List<List<SelectedProduct>> waitingOder;
 
   @override
   State<OderPage> createState() => _OderPage();
@@ -23,7 +23,6 @@ class _OderPage extends State<OderPage> {
 
   Product GrilledChickenThigh = Product(name: '焼き鳥(もも)', stock: 100, prise: 100, options: ['塩','甘口','中辛','辛口','デス']);
   Product GrilledChickenSkin = Product(name: '焼き鳥(かわ)', stock: 100, prise: 100, options: ['塩','甘口','中辛','辛口','デス']);
-  Product Mo = Product(name: 'もちょ', stock: 100, prise: 100, options: ['あん','カスタ']);
   ///商品名ボタンで選択された商品のオブジェクト
   Product selectedProductObject = Product(name: '', stock: 0, prise: 0, options: []);
   int selectedProductOption = 0;
@@ -81,7 +80,12 @@ class _OderPage extends State<OderPage> {
 
         actions: [
           TextButton.icon(
-            onPressed: () {},
+            onPressed: ()=>Navigator.push(
+              context,
+              MaterialPageRoute(builder:(context){
+                return CasherPage(title: '会計ページ',selectedProducts: selectedProducts, waitingOder: widget.waitingOder);
+              })
+            ),
             icon: const Icon(Icons.point_of_sale),
             label: const Text('会計',selectionColor: Color.fromARGB(0, 0, 100, 0),),
           ),
@@ -132,9 +136,9 @@ class _OderPage extends State<OderPage> {
                         width: screenWidth * 0.18,
                         height: screenHeight,
                         title:'商品名',
-                        products:[GrilledChickenThigh.name,GrilledChickenSkin.name,Mo.name], //実装後は変数とかにする
+                        products:[GrilledChickenThigh.name,GrilledChickenSkin.name], //実装後は変数とかにする
                         selectedProduct: selectedProductObject,
-                        P:[GrilledChickenThigh,GrilledChickenSkin,Mo],//実装後は変数とかにする
+                        P:[GrilledChickenThigh,GrilledChickenSkin],//実装後は変数とかにする
                         buttonUpdate: updateName,
                       ),
                     ),
@@ -216,16 +220,16 @@ class _OderPage extends State<OderPage> {
                                 ],
                               ),
                             ),
-                            Container(height: screenWidth * 0.005),
+                            Container(height: screenHeight * 0.005),
                             Container(height: screenHeight * 0.231, width: 390, color: Color.fromARGB(255, 255, 255, 255),),
-                            Container(height: screenWidth * 0.005),
+                            Container(height: screenHeight * 0.005),
                             Container(
                               width: 390,
-                              height: screenHeight * 0.155,
+                              height: screenHeight * 0.14,
                               color: Color.fromARGB(255, 255, 255, 255),
                               child:  Container(
                                 width: 100,
-                                height: screenHeight * 0.155,
+                                height: screenHeight * 0.14,
                                 child: ElevatedButton(                         
                                   style: ElevatedButton.styleFrom(
                                     shape: RoundedRectangleBorder(
