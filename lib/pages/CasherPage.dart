@@ -11,7 +11,7 @@ class CasherPage extends StatefulWidget {
   final String title;
   List<SelectedProduct> selectedProducts;
 
-  List<List<SelectedProduct>> waitingOder;
+  Map<DateTime,List<SelectedProduct>> waitingOder;
 
 
 
@@ -40,7 +40,7 @@ class _CasherPage extends State<CasherPage> {
 
   void backOderPage(){
     setState(() {
-      widget.waitingOder.add(widget.selectedProducts);
+      widget.waitingOder[DateTime.now()] = widget.selectedProducts;
       widget.selectedProducts = [];
       Navigator.push(
         context,

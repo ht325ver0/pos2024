@@ -24,7 +24,6 @@ class CartWidget extends StatelessWidget {
           return ListTile(
             title: Text('${product.object.name} (${product.object.options[product.optionNumber]})'),
             subtitle: Text('個数: ${product.oderPieces}'),
-
             trailing: Text('${product.calculatSubtotal()}円'),
           );
         },

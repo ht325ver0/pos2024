@@ -12,7 +12,7 @@ class OderPage extends StatefulWidget {
   OderPage({super.key, required this.title, required this.waitingOder});
 
   final String title;
-  List<List<SelectedProduct>> waitingOder;
+  Map<DateTime,List<SelectedProduct>> waitingOder;
 
   @override
   State<OderPage> createState() => _OderPage();

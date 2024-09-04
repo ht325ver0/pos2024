@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
 
       ),
-      home: OderPage(title: 'タイトル',waitingOder: [],),
+      home: OderPage(title: 'タイトル',waitingOder: {},),
     );
   }
 }

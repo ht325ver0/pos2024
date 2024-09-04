@@ -6,7 +6,9 @@ import 'package:pos2024/widgets/Cart.dart';
 import 'package:pos2024/widgets/KeyPad.dart';
 
 class LogPage extends StatefulWidget {
-  LogPage({super.key, });
+  LogPage({super.key, required this.waitingOder});
+
+  Map<DateTime,List<SelectedProduct>> waitingOder;
 
   @override
   State<LogPage> createState() => _LogPage();
@@ -22,7 +24,7 @@ class _LogPage extends State<LogPage> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-
+      
     );
   }
 }
