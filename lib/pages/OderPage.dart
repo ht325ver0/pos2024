@@ -183,16 +183,16 @@ class _OderPage extends State<OderPage> {
                                 children: [
                                   Container(
                                     width: 380,
-                                    height: 25,
+                                    height: screenHeight * 0.03,
                                     margin: const EdgeInsets.all(3.0),
                                     color: const Color.fromARGB(248, 228, 227, 227),
                                     child: Center(child:Text('メモ',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
                                   ),
                                   SizedBox(
                                     width: screenWidth * 0.38,
-                                    height: screenHeight * 0.16,
+                                    height: screenHeight * 0.15,
                                     child: TextFormField(
-                                      maxLines: 5,
+                                      maxLines: 3,
                                       onChanged: (value){
                                         memo = value;
                                       },
@@ -202,7 +202,7 @@ class _OderPage extends State<OderPage> {
                                       keyboardType: TextInputType.multiline,
                                       decoration: InputDecoration(
                                         hintText: "Text",
-                                        enabledBorder: OutlineInputBorder(
+                                        border: OutlineInputBorder(
                                           borderRadius: BorderRadius.circular(0),
                                           borderSide: BorderSide(
                                             width: 0.5,

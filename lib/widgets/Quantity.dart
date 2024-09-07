@@ -58,19 +58,19 @@ class _Quantity extends State<Quantity>{
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 380,
-            height: 25,
+            width: widget.width * 0.9,
+            height: widget.height * 0.1,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
             child: Center(child:Text(widget.title,selectionColor: Color.fromARGB(255, 255, 254, 254),)),
           ),
           Container(
-            height: 20,
+            height: widget.height * 0.05,
           ),
           Container(
             color: const Color.fromARGB(255, 255, 255, 255),
-            width: 380,
-            height: 125,
+            width: widget.width * 0.85,
+            height: widget.height * 0.6,
             child: Expanded(
               child: ListWheelScrollView(
                 itemExtent: 50,
@@ -112,29 +112,33 @@ class _Quantity extends State<Quantity>{
             ),
           ),
           Center(
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.remove),
-                  onPressed: _decrementCounter,
-                  color: Colors.red,
-                  iconSize: 40.0,
-                ),
-                Container(
-                  width: 2,
-                  height: 20,
-                  color: Color.fromARGB(255, 193, 192, 192),
-                ),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: _incrementCounter,
-                  color: Colors.green,
-                  iconSize: 40.0,
-                ),
-                Container(
-                  child:Text(widget.index.toString())
-                ),
-              ],
+            child: Container(
+              width: widget.width * 0.9,
+              height: widget.height * 0.2,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.remove),
+                    onPressed: _decrementCounter,
+                    color: Colors.red,
+                    iconSize: widget.width * 0.1,
+                  ),
+                  Container(
+                    width: 2,
+                    height: widget.height * 0.1,
+                    color: Color.fromARGB(255, 193, 192, 192),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: _incrementCounter,
+                    color: Colors.green,
+                    iconSize: widget.width * 0.1,
+                  ),
+                  Container(
+                    child:Text(widget.index.toString())
+                  ),
+                ],
+              ),
             ),
           ),
         ],
