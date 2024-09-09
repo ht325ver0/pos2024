@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "346716165610",
+    "project_id": "k3posapp",
+    "storage_bucket": "k3posapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346716165610:android:a9b667f18bd67643e98e93",
+        "android_client_info": {
+          "package_name": "com.example.pos2024"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYqBbEXFxIqQf-3DOry4CcJmp-GWOZ7EY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
