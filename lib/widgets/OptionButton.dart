@@ -57,8 +57,8 @@ class _OptionButton extends State<OptionButton>{
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 190,
-            height: 25,
+            width: widget.width*0.95,
+            height: widget.height * 0.03,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
             child: Center(
@@ -77,7 +77,7 @@ class _OptionButton extends State<OptionButton>{
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0),
                 ),
-                minimumSize: const Size(190, 100),
+                minimumSize: Size(widget.width * 0.95, widget.height * 0.15),
               ),
               onPressed: () => onButtonPressed(i),
               child: Text(widget.options[i]),

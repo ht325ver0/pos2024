@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'k3posapp.appspot.com',
     measurementId: 'G-DPC0YXF9ZK',
   );
+
 }

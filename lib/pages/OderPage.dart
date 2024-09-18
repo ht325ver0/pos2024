@@ -5,14 +5,15 @@ import 'package:pos2024/widgets/CategoryButton.dart';
 import 'package:pos2024/models/Product.dart';
 import 'package:pos2024/widgets/OptionButton.dart';
 import 'package:pos2024/widgets/Quantity.dart';
-import 'package:pos2024/models/SelectedProduct.dart';
 import 'package:pos2024/widgets/Cart.dart';
+import 'package:pos2024/firestore.dart';
 
 class OderPage extends StatefulWidget {
-  OderPage({super.key, required this.title, required this.waitingOder});
+  OderPage({super.key, required this.title, required this.waitingOder, required this.customerCounter});
 
   final String title;
   Map<DateTime,List<SelectedProduct>> waitingOder;
+  int customerCounter;
 
   @override
   State<OderPage> createState() => _OderPage();
@@ -21,15 +22,38 @@ class OderPage extends StatefulWidget {
 class _OderPage extends State<OderPage> {
   int selectedItem = 0;
 
-  Product GrilledChickenThigh = Product(name: '焼き鳥(もも)', stock: 100, prise: 100, options: ['塩','甘口','中辛','辛口','デス']);
-  Product GrilledChickenSkin = Product(name: '焼き鳥(かわ)', stock: 100, prise: 100, options: ['塩','甘口','中辛','辛口','デス']);
+  Product GrilledChickenThigh = Product(name: '焼き鳥(もも)', stock: 100, price: 100, options: ['塩','甘口','中辛','辛口','デス']);
+  Product GrilledChickenSkin = Product(name: '焼き鳥(かわ)', stock: 100, price: 100, options: ['塩','甘口','中辛','辛口','デス']);
   ///商品名ボタンで選択された商品のオブジェクト
-  Product selectedProductObject = Product(name: '', stock: 0, prise: 0, options: []);
+  Product selectedProductObject = Product(name: '', stock: 0, price: 0, options: []);
   int selectedProductOption = 0;
   int selectedProductQuantity = 1;
   String memo = '';
   List<SelectedProduct> selectedProducts = [];
   int totalPrice = 0;
+
+  late Firestore collection;
+  List<Product> productsList = []; // ここで空のリストとして初期化
+  List<String> productsNameList = []; // ここで空のリストとして初期化
+
+  @override
+  void initState() {
+    super.initState();
+
+    collection = Firestore();
+    fetchProducts();
+
+  }
+
+  Future<void> fetchProducts() async {
+    List<Product> fetchedProducts = await collection.getProductList();
+    setState(() {
+      productsList = fetchedProducts;
+      productsNameList = productsList.map((product) => product.name).toList();
+    });
+    
+    debugPrint("${fetchedProducts}\n ${productsNameList}");
+  }
 
   void updateName(Product newProduct) {
     setState(() {
@@ -83,7 +107,12 @@ class _OderPage extends State<OderPage> {
             onPressed: ()=>Navigator.push(
               context,
               MaterialPageRoute(builder:(context){
-                return CasherPage(title: '会計ページ',selectedProducts: selectedProducts, waitingOder: widget.waitingOder);
+                return CasherPage(
+                  title: '会計ページ',
+                  selectedProducts: selectedProducts, 
+                  waitingOder: widget.waitingOder, 
+                  customerCounter: widget.customerCounter,
+                );
               })
             ),
             icon: const Icon(Icons.point_of_sale),
@@ -135,10 +164,10 @@ class _OderPage extends State<OderPage> {
                       child: CategoryButton(
                         width: screenWidth * 0.18,
                         height: screenHeight,
-                        title:'商品名',
-                        products:[GrilledChickenThigh.name,GrilledChickenSkin.name], //実装後は変数とかにする
+                        title: '商品名',
+                        products: productsNameList, //実装後は変数とかにする
                         selectedProduct: selectedProductObject,
-                        P:[GrilledChickenThigh,GrilledChickenSkin],//実装後は変数とかにする
+                        P: productsList,//実装後は変数とかにする
                         buttonUpdate: updateName,
                       ),
                     ),
@@ -159,91 +188,96 @@ class _OderPage extends State<OderPage> {
                        //いっちゃん右(本数とか多分ダイアログとかにすると使いやすい)
                         width: screenWidth * 0.255,
                         height: screenHeight,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Quantity(
-                              width: screenWidth * 0.3,
-                              height: screenHeight * 0.3,
-                              title: '個数', 
-                              index: selectedProductQuantity,
-                              onQuantityChange: (newQuantity) {
-                                setState(() {
-                                  selectedProductQuantity = newQuantity;
-                                });
-                              },
-                            ),
-                            Container(height: screenHeight * 0.005,),
-                            Container(
-                              color: const Color.fromARGB(255, 255, 255, 255),
-                              width: screenWidth * 0.385,
-                              height: screenHeight * 0.2,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 380,
-                                    height: screenHeight * 0.03,
-                                    margin: const EdgeInsets.all(3.0),
-                                    color: const Color.fromARGB(248, 228, 227, 227),
-                                    child: Center(child:Text('メモ',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
-                                  ),
-                                  SizedBox(
-                                    width: screenWidth * 0.38,
-                                    height: screenHeight * 0.15,
-                                    child: TextFormField(
-                                      maxLines: 3,
-                                      onChanged: (value){
-                                        memo = value;
-                                      },
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                      ),
-                                      keyboardType: TextInputType.multiline,
-                                      decoration: InputDecoration(
-                                        hintText: "Text",
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(0),
-                                          borderSide: BorderSide(
-                                            width: 0.5,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Quantity(
+                                width: screenWidth * 0.3,
+                                height: screenHeight * 0.3,
+                                title: '個数', 
+                                index: selectedProductQuantity,
+                                onQuantityChange: (newQuantity) {
+                                  setState(() {
+                                    selectedProductQuantity = newQuantity;
+                                  });
+                                },
+                              ),
+                              Container(height: screenHeight * 0.005),
+                              Container(
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                                width: screenWidth * 0.385,
+                                height: screenHeight * 0.2,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: screenWidth * 0.38,
+                                      height: screenHeight * 0.03,
+                                      margin: const EdgeInsets.all(3.0),
+                                      color: const Color.fromARGB(248, 228, 227, 227),
+                                      child: Center(child:Text('メモ',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
+                                    ),
+                                    SizedBox(
+                                      width: screenWidth * 0.38,
+                                      height: screenHeight * 0.15,
+                                      child: TextFormField(
+                                        maxLines: 3,
+                                        onChanged: (value){
+                                          memo = value;
+                                        },
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                        keyboardType: TextInputType.multiline,
+                                        decoration: InputDecoration(
+                                          hintText: "Text",
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(0),
+                                            borderSide: BorderSide(
+                                              width: 0.5,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(0),
+                                            borderSide: BorderSide(
+                                              width: 0.5,
+                                            )
                                           ),
                                         ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(0),
-                                          borderSide: BorderSide(
-                                            width: 0.5,
-                                          )
-                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(height: screenHeight * 0.005),
-                            Container(height: screenHeight * 0.231, width: 390, color: Color.fromARGB(255, 255, 255, 255),),
-                            Container(height: screenHeight * 0.005),
-                            Container(
-                              width: 390,
-                              height: screenHeight * 0.14,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              child:  Container(
-                                width: 100,
-                                height: screenHeight * 0.14,
-                                child: ElevatedButton(                         
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(0),
-                                    ),
-                                    minimumSize: const Size(10,10),
-                                  ),
-                                  onPressed: () => addCart(),
-                                  child: 
-                                    Text('カートに追加'),
+                                  ],
                                 ),
                               ),
-                            ),
-                          ],
+                              Container(height: screenHeight * 0.005),
+                              Container(
+                                height: screenHeight * 0.24, 
+                                width: screenWidth * 0.385, 
+                                color: Color.fromARGB(255, 255, 255, 255),
+                              ),
+                              Container(height: screenHeight * 0.005),
+                              Container(
+                                width: screenWidth * 0.385,
+                                height: screenHeight * 0.18,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                child:  Container(
+                                  width: 100,
+                                  height: screenHeight * 0.14,
+                                  child: ElevatedButton(                         
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                    onPressed: () => addCart(),
+                                    child: 
+                                      Text('カートに追加'),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),          

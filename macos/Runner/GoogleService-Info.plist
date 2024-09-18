@@ -9,22 +9,22 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.pos2024</string>
+	<string>com.example.pos2024formac</string>
 	<key>PROJECT_ID</key>
 	<string>k3posapp</string>
 	<key>STORAGE_BUCKET</key>
 	<string>k3posapp.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:346716165610:ios:b787d68e52576621e98e93</string>
+	<string>1:346716165610:ios:e4e7249686c19dc8e98e93</string>
 </dict>
 </plist>

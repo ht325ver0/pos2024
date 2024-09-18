@@ -4,16 +4,16 @@ import 'package:pos2024/models/SelectedProduct.dart';
 import 'package:pos2024/pages/OderPage.dart';
 import 'package:pos2024/widgets/Cart.dart';
 import 'package:pos2024/widgets/KeyPad.dart';
+import 'package:pos2024/firestore.dart';
 
 class CasherPage extends StatefulWidget {
-  CasherPage({super.key, required this.title, required this.selectedProducts, required this.waitingOder});
+  CasherPage({super.key, required this.title, required this.selectedProducts, required this.waitingOder,required this.customerCounter});
 
   final String title;
   List<SelectedProduct> selectedProducts;
+  int customerCounter;
 
   Map<DateTime,List<SelectedProduct>> waitingOder;
-
-
 
   @override
   State<CasherPage> createState() => _CasherPage();
@@ -24,6 +24,7 @@ class _CasherPage extends State<CasherPage> {
   String _input = '';
   int totalPrice = 0;
   int change = 0;
+  late Firestore collection;
 
   @override
   void initState() {
@@ -40,12 +41,18 @@ class _CasherPage extends State<CasherPage> {
 
   void backOderPage(){
     setState(() {
+      widget.customerCounter += 1;
       widget.waitingOder[DateTime.now()] = widget.selectedProducts;
+      
       widget.selectedProducts = [];
       Navigator.push(
         context,
         MaterialPageRoute(builder:(context){
-          return OderPage(title: '注文ページ',waitingOder: widget.waitingOder,);
+          return OderPage(
+            title: '注文ページ',
+            waitingOder: widget.waitingOder,
+            customerCounter: widget.customerCounter,
+          );
         })
       );
     });

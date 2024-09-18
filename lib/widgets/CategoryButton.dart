@@ -44,14 +44,14 @@ class _CategoryButton extends State<CategoryButton>{
         return widget.P[i];
       }
     }
-    return Product(name: '', stock: 0, prise: 0, options: []);
+    return Product(name: '', stock: 0, price: 0, options: []);
   }
 
   void onButtonPressed(String productName) {
     Product selected = getProductClass(productName);
     setState(() {
       if (productName == widget.selectedProduct.name) {
-        selected = Product(name: '', stock: 0, prise: 0, options: []);
+        selected = Product(name: '', stock: 0, price: 0, options: []);
       }
       widget.selectedProduct = selected;
     });
@@ -71,8 +71,8 @@ class _CategoryButton extends State<CategoryButton>{
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 190,
-            height: 25,
+            width: widget.width * 0.95,
+            height: widget.height * 0.03,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
             child: Center(child:Text(widget.title, selectionColor: Color.fromARGB(255, 255, 254, 254),)),
@@ -86,7 +86,7 @@ class _CategoryButton extends State<CategoryButton>{
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0),
                 ),
-                minimumSize: const Size(190, 100),
+                minimumSize: Size(widget.width * 0.95, widget.height * 0.15),
               ),
               onPressed: () => onButtonPressed(widget.products[i]),
               child: 
