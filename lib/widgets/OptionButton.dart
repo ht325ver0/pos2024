@@ -58,33 +58,43 @@ class _OptionButton extends State<OptionButton>{
         children: [
           Container(
             width: widget.width*0.95,
-            height: widget.height * 0.03,
+            height: widget.height * 0.05,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
             child: Center(
               child: Text(
                 widget.title,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0),fontSize: 18),
               ),
             ),
           ),
-          for (int i = 0; i < widget.options.length; i++) ...[
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: i == widget.selectedOption
-                    ? const Color.fromARGB(255, 165, 154, 129)
-                    : const Color.fromARGB(255, 250, 233, 195),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                ),
-                minimumSize: Size(widget.width * 0.95, widget.height * 0.15),
+          SizedBox(
+            height: widget.height * 0.8, // Set a height limit to allow scrolling
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (int i = 0; i < widget.options.length; i++) ...[
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: i == widget.selectedOption
+                            ? const Color.fromARGB(255, 165, 154, 129)
+                            : const Color.fromARGB(255, 250, 233, 195),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0),
+                        ),
+                        minimumSize: Size(widget.width * 0.95, widget.height * 0.17),
+                      ),
+                      onPressed: () => onButtonPressed(i),
+                      child: Text(widget.options[i],style: TextStyle(fontSize: 22)),
+                    ),
+                    const SizedBox(height: 10),
+                ],
+                ],
               ),
-              onPressed: () => onButtonPressed(i),
-              child: Text(widget.options[i]),
             ),
-            const SizedBox(height: 10),
+          ),
+            
           ]
-        ],
       ),
     );
   }

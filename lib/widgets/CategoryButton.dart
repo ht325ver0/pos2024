@@ -72,10 +72,10 @@ class _CategoryButton extends State<CategoryButton>{
         children: [
           Container(
             width: widget.width * 0.95,
-            height: widget.height * 0.03,
+            height: widget.height * 0.05,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
-            child: Center(child:Text(widget.title, selectionColor: Color.fromARGB(255, 255, 254, 254),)),
+            child: Center(child:Text(widget.title, selectionColor: Color.fromARGB(255, 255, 254, 254),style: TextStyle(fontSize: 18),)),
           ),
           for(int i = 0; i < widget.products.length; i++)...[
             ElevatedButton(                            
@@ -86,11 +86,11 @@ class _CategoryButton extends State<CategoryButton>{
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0),
                 ),
-                minimumSize: Size(widget.width * 0.95, widget.height * 0.15),
+                minimumSize: Size(widget.width * 0.95, widget.height * 0.20),
               ),
               onPressed: () => onButtonPressed(widget.products[i]),
               child: 
-                Text(widget.products[i]),
+                Text(widget.products[i],style: TextStyle(fontSize: 22)),
             ),
             Container(height: 10),
           ]

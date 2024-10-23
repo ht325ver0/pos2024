@@ -31,6 +31,7 @@ class _OderPage extends State<OderPage> {
   String memo = '';
   List<SelectedProduct> selectedProducts = [];
   int totalPrice = 0;
+  int totalQuantity = 0;
 
   late Firestore collection;
   List<Product> productsList = []; // ここで空のリストとして初期化
@@ -41,15 +42,18 @@ class _OderPage extends State<OderPage> {
     super.initState();
 
     collection = Firestore();
-    fetchProducts();
+    fetchData();
 
   }
 
-  Future<void> fetchProducts() async {
+  Future<void> fetchData() async {
     List<Product> fetchedProducts = await collection.getProductList();
+    int co = await collection.getCustomerCounte();
+
     setState(() {
       productsList = fetchedProducts;
       productsNameList = productsList.map((product) => product.name).toList();
+      widget.customerCounter = co;
     });
     
     debugPrint("${fetchedProducts}\n ${productsNameList}");
@@ -67,26 +71,48 @@ class _OderPage extends State<OderPage> {
     });
   }
 
-  void addCart(){
-    getObject();
-    getTotalPrice();
-  }
-
-  void getObject(){
+  void updateTotal(){
     setState(() {
-      selectedProducts.add(
-        SelectedProduct(object:this.selectedProductObject, optionNumber:this.selectedProductOption, oderPieces: selectedProductQuantity, memo: this.memo)
-      );
-    });
-  }
-
-  void getTotalPrice(){
-    setState(() {
-      for(int i = 0; i < selectedProducts.length; i++){
+      totalPrice = 0; // 合計金額をリセット
+      for (int i = 0; i < selectedProducts.length; i++) {
         totalPrice += selectedProducts[i].calculatSubtotal();
       }
+      int discount = (totalQuantity ~/ 3) * 50;
+      debugPrint('a${totalQuantity}');
+      totalPrice -= discount;
     });
   }
+
+  void addCart() {
+    setState(() {
+      getObject();
+      updateTotalQuantity();
+    });
+  }
+
+  void getObject() {
+    selectedProducts.add(
+      SelectedProduct(
+        object: this.selectedProductObject, 
+        optionNumber: this.selectedProductOption, 
+        oderPieces: selectedProductQuantity, 
+        memo: this.memo
+      )
+    );
+  }
+
+  void updateTotalQuantity(){
+    setState(() {
+      totalQuantity = 0; // 合計金額をリセット
+      for (int i = 0; i < selectedProducts.length; i++) {
+        totalQuantity += selectedProducts[i].oderPieces;
+        debugPrint('${selectedProducts[i].oderPieces}');
+      }
+      updateTotal();
+    });
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -100,23 +126,45 @@ class _OderPage extends State<OderPage> {
 
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
 
-        title: Text(widget.title),
+        title: Text(widget.title,style: TextStyle(fontSize: 24),),
 
         actions: [
           TextButton.icon(
-            onPressed: ()=>Navigator.push(
-              context,
-              MaterialPageRoute(builder:(context){
-                return CasherPage(
-                  title: '会計ページ',
-                  selectedProducts: selectedProducts, 
-                  waitingOder: widget.waitingOder, 
-                  customerCounter: widget.customerCounter,
+            onPressed: (){
+              debugPrint("$selectedProducts");
+              if(selectedProducts.isEmpty){
+                showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Text("カートに商品がありません"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // ダイアログを閉じる
+                                },
+                                child: Text("OK"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+              }else{
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder:(context){
+                    return CasherPage(
+                      title: '会計ページ',
+                      selectedProducts: selectedProducts, 
+                      waitingOder: widget.waitingOder, 
+                      customerCounter: widget.customerCounter,
+                    );
+                  })
                 );
-              })
-            ),
+              }
+            },
             icon: const Icon(Icons.point_of_sale),
-            label: const Text('会計',selectionColor: Color.fromARGB(0, 0, 100, 0),),
+            label: const Text('会計',selectionColor: Color.fromARGB(0, 239, 216, 222),style: TextStyle(fontSize: 24),),
           ),
         ],
       ),
@@ -136,7 +184,12 @@ class _OderPage extends State<OderPage> {
                       color: const Color.fromARGB(255, 255, 255, 255),//・合計金額・決済に進むためのボタン
                       width: screenWidth * 0.35,
                       height: screenHeight * 0.25,
-                      child: Row(children: [Text('合計金額'),Text('$totalPrice 円')]),
+                      child: Row(
+                        children: [
+                          Text('合計金額:',style: TextStyle(fontSize: 20),),
+                          Text('$totalPrice 円', style: TextStyle(fontSize: 40)),
+                        ]
+                      ),
                     ),
                   ),
                   Container(
@@ -144,16 +197,16 @@ class _OderPage extends State<OderPage> {
                     child: Container(
                       width: screenWidth * 0.35,
                       height: screenHeight * 0.62,
-                      child: CartWidget(selectedProducts: selectedProducts)),
+                      child: CartWidget(selectedProducts: selectedProducts, totalPrice: totalPrice, onPush: updateTotalQuantity,)
+                    ),
                   ),
-                  Container()
                 ],
               ),
             ),
             Container(
               alignment: Alignment.center,
               child: Container(
-                color: const Color.fromARGB(255, 255, 162, 13),//右側の土台
+                color: const Color.fromARGB(255, 237, 233, 230),//右側の土台
                 width: screenWidth * 0.625,
                 height: screenHeight,
                 child: Row(
@@ -194,7 +247,7 @@ class _OderPage extends State<OderPage> {
                             children: [
                               Quantity(
                                 width: screenWidth * 0.3,
-                                height: screenHeight * 0.3,
+                                height: screenHeight * 0.35,
                                 title: '個数', 
                                 index: selectedProductQuantity,
                                 onQuantityChange: (newQuantity) {
@@ -204,52 +257,7 @@ class _OderPage extends State<OderPage> {
                                 },
                               ),
                               Container(height: screenHeight * 0.005),
-                              Container(
-                                color: const Color.fromARGB(255, 255, 255, 255),
-                                width: screenWidth * 0.385,
-                                height: screenHeight * 0.2,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: screenWidth * 0.38,
-                                      height: screenHeight * 0.03,
-                                      margin: const EdgeInsets.all(3.0),
-                                      color: const Color.fromARGB(248, 228, 227, 227),
-                                      child: Center(child:Text('メモ',selectionColor: Color.fromARGB(255, 255, 254, 254),)),
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth * 0.38,
-                                      height: screenHeight * 0.15,
-                                      child: TextFormField(
-                                        maxLines: 3,
-                                        onChanged: (value){
-                                          memo = value;
-                                        },
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                        keyboardType: TextInputType.multiline,
-                                        decoration: InputDecoration(
-                                          hintText: "Text",
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(0),
-                                            borderSide: BorderSide(
-                                              width: 0.5,
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(0),
-                                            borderSide: BorderSide(
-                                              width: 0.5,
-                                            )
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            
                               Container(height: screenHeight * 0.005),
                               Container(
                                 height: screenHeight * 0.24, 
@@ -259,7 +267,7 @@ class _OderPage extends State<OderPage> {
                               Container(height: screenHeight * 0.005),
                               Container(
                                 width: screenWidth * 0.385,
-                                height: screenHeight * 0.18,
+                                height: screenHeight * 0.3,
                                 color: Color.fromARGB(255, 255, 255, 255),
                                 child:  Container(
                                   width: 100,
@@ -272,7 +280,8 @@ class _OderPage extends State<OderPage> {
                                     ),
                                     onPressed: () => addCart(),
                                     child: 
-                                      Text('カートに追加'),
+                                      Text('カートに追加', style: TextStyle(fontSize: 22)),
+                                    
                                   ),
                                 ),
                               ),
@@ -301,10 +310,7 @@ class _OderPage extends State<OderPage> {
                   
 
 //'できれば本数を簡単に+-できるボタンも欲しい,簡単なメモができるのもあるといい'),
-                 
 
-
-           
   
 
       drawer: const Drawer(child:Center(child:Text("注文画面、在庫管理画面(グラフ的なものも欲しい)、金調整"))),

@@ -59,88 +59,60 @@ class _Quantity extends State<Quantity>{
         children: [
           Container(
             width: widget.width * 0.9,
-            height: widget.height * 0.1,
+            height: widget.height * 0.15,
             margin: const EdgeInsets.all(3.0),
             color: const Color.fromARGB(248, 228, 227, 227),
-            child: Center(child:Text(widget.title,selectionColor: Color.fromARGB(255, 255, 254, 254),)),
+            child: Center(child:Text(widget.title,selectionColor: Color.fromARGB(255, 255, 254, 254),style: TextStyle(fontSize: 18))),
           ),
           Container(
             height: widget.height * 0.05,
           ),
-          Container(
-            color: const Color.fromARGB(255, 255, 255, 255),
-            width: widget.width * 0.85,
-            height: widget.height * 0.6,
-            child: Expanded(
-              child: ListWheelScrollView(
-                itemExtent: 50,
-                physics: FixedExtentScrollPhysics(), 
-                onSelectedItemChanged: (selectedItem) {
-                  setState(() {
-                    widget.index = selectedItem;
-                    widget.onQuantityChange(widget.index);
-                  });
-                },
-                controller: controller,
-                children: [
-                  for (var i in List.generate(1000, (i) => i))
-                    Container(
-                      decoration: BoxDecoration(
-                        color: widget.index - 1 == i
-                          ? Colors.blueAccent
-                          : Colors.white,
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                        border: Border.all(
-                          width: 2,
-                          color: widget.index - 1 == i
-                            ? Colors.blueAccent 
-                            : Colors.grey.shade300,
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          (i + 1).toString(),
-                          style: TextStyle(
-                            fontSize: widget.index-1 == i ? 24.0 : 18.0, // 選択されたアイテムのフォントサイズ
-                            fontWeight: widget.index-1 == i ? FontWeight.bold : FontWeight.normal, // 選択されたアイテムのフォントの太さ
-                          ),
-                        ),
-                      ),
-                    ),  
-                ],
-              ),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children:[
+              Container(width: widget.width * 0.05,),
+              Text(widget.index.toString(),style: TextStyle(fontSize: 40)),
+              Text('個',style: TextStyle(fontSize: 40)),
+              Container(width: widget.width * 0.05)
+            ]
           ),
           Center(
             child: Container(
-              width: widget.width * 0.9,
-              height: widget.height * 0.2,
+              width: widget.width,
+              height: widget.height * 0.5,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center, // 中央に揃える
+                crossAxisAlignment: CrossAxisAlignment.center, // 縦方向も中央に揃える
                 children: [
                   IconButton(
                     icon: Icon(Icons.remove),
                     onPressed: _decrementCounter,
                     color: Colors.red,
-                    iconSize: widget.width * 0.1,
+                    iconSize: widget.width * 0.3,
+                    padding: EdgeInsets.all(0), // パディングをゼロに
+                    constraints: BoxConstraints(
+                      minWidth: widget.width * 0.3, // アイコンと一致させる
+                      minHeight: widget.width * 0.3, 
+                    ),
                   ),
-                  Container(
-                    width: 2,
-                    height: widget.height * 0.1,
-                    color: Color.fromARGB(255, 193, 192, 192),
-                  ),
+                  SizedBox(width: widget.width * 0.05), // アイコンの間隔を設定
                   IconButton(
                     icon: Icon(Icons.add),
                     onPressed: _incrementCounter,
                     color: Colors.green,
-                    iconSize: widget.width * 0.1,
-                  ),
-                  Container(
-                    child:Text(widget.index.toString())
+                    iconSize: widget.width * 0.3,
+                    padding: EdgeInsets.all(0), // パディングをゼロに
+                    constraints: BoxConstraints(
+                      minWidth: widget.width * 0.3, // アイコンと一致させる
+                      minHeight: widget.width * 0.3,
+                    ),
                   ),
                 ],
               ),
             ),
           ),
+
+
         ],
       ),
     );

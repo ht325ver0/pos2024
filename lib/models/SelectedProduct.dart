@@ -22,9 +22,15 @@ class SelectedProduct{
   ///小計計算
   int calculatSubtotal(){
     int subtotal = this.object.price * this.oderPieces;
-    int discount = (oderPieces ~/ 3) * 30;
-    subtotal -= discount;
     return subtotal;
+  }
+
+  void addPieces(){
+    this.oderPieces += 1;
+  }
+
+  void decPieces(){
+    this.oderPieces -= 1;
   }
 
   String getOptionString(){

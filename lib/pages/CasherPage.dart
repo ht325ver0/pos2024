@@ -29,6 +29,7 @@ class _CasherPage extends State<CasherPage> {
   @override
   void initState() {
     getTotalPrice();
+    collection = Firestore();
     super.initState();
   }
 
@@ -43,7 +44,7 @@ class _CasherPage extends State<CasherPage> {
     setState(() {
       widget.customerCounter += 1;
       widget.waitingOder[DateTime.now()] = widget.selectedProducts;
-      
+      collection.addServedProduct(widget.selectedProducts, widget.customerCounter, totalPrice, _input);
       widget.selectedProducts = [];
       Navigator.push(
         context,
@@ -117,7 +118,7 @@ class _CasherPage extends State<CasherPage> {
               color: const Color.fromARGB(255, 255, 255, 255),
               width: screenWidth * 0.35,
               height: screenHeight * 0.88,
-              child: CartWidget(selectedProducts: widget.selectedProducts,),
+              child: CartWidget(selectedProducts: widget.selectedProducts,totalPrice: totalPrice,onPush: getChange,),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
