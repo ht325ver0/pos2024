@@ -36,6 +36,7 @@ class _OderPage extends State<OderPage> {
   late Firestore collection;
   List<Product> productsList = []; // ここで空のリストとして初期化
   List<String> productsNameList = []; // ここで空のリストとして初期化
+  Product nullProduct = Product(name: '', stock: 0, price: 0, options: []);
 
   @override
   void initState() {
@@ -49,6 +50,7 @@ class _OderPage extends State<OderPage> {
   Future<void> fetchData() async {
     List<Product> fetchedProducts = await collection.getProductList();
     int co = await collection.getCustomerCounte();
+    
 
     setState(() {
       productsList = fetchedProducts;
@@ -188,6 +190,7 @@ class _OderPage extends State<OderPage> {
                         children: [
                           Text('合計金額:',style: TextStyle(fontSize: 20),),
                           Text('$totalPrice 円', style: TextStyle(fontSize: 40)),
+                          if(totalQuantity > 2) Text('割引 -${totalQuantity ~/ 3 * 50} 円', style: TextStyle(fontSize: 20)),
                         ]
                       ),
                     ),
@@ -197,7 +200,7 @@ class _OderPage extends State<OderPage> {
                     child: Container(
                       width: screenWidth * 0.35,
                       height: screenHeight * 0.62,
-                      child: CartWidget(selectedProducts: selectedProducts, totalPrice: totalPrice, onPush: updateTotalQuantity,)
+                      child: CartWidget(height: screenHeight * 0.3, width: screenWidth * 0.3, selectedProducts: selectedProducts, totalPrice: totalPrice, onPush: updateTotalQuantity,edit: true,)
                     ),
                   ),
                 ],
@@ -278,7 +281,28 @@ class _OderPage extends State<OderPage> {
                                         borderRadius: BorderRadius.circular(0),
                                       ),
                                     ),
-                                    onPressed: () => addCart(),
+                                    onPressed: (){
+                                      if(selectedProductObject == nullProduct){
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              content: Text("カートに商品がありません"),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop(); // ダイアログを閉じる
+                                                  },
+                                                  child: Text("OK"),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }else{
+                                        addCart();
+                                      }
+                                      },
                                     child: 
                                       Text('カートに追加', style: TextStyle(fontSize: 22)),
                                     

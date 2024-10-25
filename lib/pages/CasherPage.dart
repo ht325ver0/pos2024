@@ -23,12 +23,13 @@ class _CasherPage extends State<CasherPage> {
 
   String _input = '';
   int totalPrice = 0;
+  int totalQuantity = 0;
   int change = 0;
   late Firestore collection;
 
   @override
   void initState() {
-    getTotalPrice();
+    updateTotalQuantity();
     collection = Firestore();
     super.initState();
   }
@@ -36,7 +37,11 @@ class _CasherPage extends State<CasherPage> {
 
   void getChange(){
     setState(() {
-      change = int.parse(_input) - totalPrice;
+      if(_input == ''){
+        change = -totalPrice;
+      }else{
+        change = int.parse(_input) - totalPrice;
+      }
     });
   }
 
@@ -61,10 +66,34 @@ class _CasherPage extends State<CasherPage> {
 
   void _handleKeyPress(String key) {
     setState(() {
+      debugPrint('$_input');
+      
+      debugPrint('$change');
+      
       if (key == 'C') {
         _input = '';
       } else if (key == 'OK') {
-        backOderPage();
+        if(change < 0){
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                content: Text("お金が足りません"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // ダイアログを閉じる
+                      },
+                    child: Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+        }else{
+          backOderPage();
+          debugPrint("se");
+        }
         //selectedProducts初期化、オーダー画面へ遷移、注文待ち状態へ
       } else {
         _input += key;
@@ -73,12 +102,28 @@ class _CasherPage extends State<CasherPage> {
     });
   }
 
-  void getTotalPrice(){
+  void updateTotal(){
     setState(() {
-      for(int i = 0; i < widget.selectedProducts.length; i++){
+      totalPrice = 0; // 合計金額をリセット
+      for (int i = 0; i < widget.selectedProducts.length; i++) {
         totalPrice += widget.selectedProducts[i].calculatSubtotal();
       }
+      int discount = (totalQuantity ~/ 3) * 50;
+      debugPrint('a${totalQuantity}');
+      totalPrice -= discount;
     });
+  }
+
+  void updateTotalQuantity(){
+    setState(() {
+      totalQuantity = 0; // 合計金額をリセット
+      for (int i = 0; i < widget.selectedProducts.length; i++) {
+        totalQuantity +=  widget.selectedProducts[i].oderPieces;
+        debugPrint('${ widget.selectedProducts[i].oderPieces}');
+      }
+      updateTotal();
+    });
+
   }
   
   @override
@@ -98,15 +143,7 @@ class _CasherPage extends State<CasherPage> {
 
         title: Text(widget.title),
 
-        actions: [
-          TextButton.icon(
-            onPressed: () {
-              
-            },
-            icon: const Icon(Icons.point_of_sale),
-            label: const Text('会計',selectionColor: Color.fromARGB(0, 0, 100, 0),),
-          ),
-        ],
+        
       ),
       body: Container(
         alignment: Alignment.center,
@@ -118,7 +155,7 @@ class _CasherPage extends State<CasherPage> {
               color: const Color.fromARGB(255, 255, 255, 255),
               width: screenWidth * 0.35,
               height: screenHeight * 0.88,
-              child: CartWidget(selectedProducts: widget.selectedProducts,totalPrice: totalPrice,onPush: getChange,),
+              child: CartWidget(height: screenHeight, width: screenWidth * 0.3,selectedProducts: widget.selectedProducts,totalPrice: totalPrice,onPush: getChange,edit: false,),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -159,7 +196,7 @@ class _CasherPage extends State<CasherPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text('お釣り', style: TextStyle(fontSize: 32)),
-                      Text('$change 円', style: TextStyle(fontSize: 32)),
+                      Text('$change 円', style: TextStyle(fontSize: 32,color: (change < 0)?Color.fromARGB(224, 255, 63, 76):Color.fromARGB(223, 4, 4, 4)), ),
                     ],
                   ),
                 ),

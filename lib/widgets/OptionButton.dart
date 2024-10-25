@@ -39,7 +39,7 @@ class _OptionButton extends State<OptionButton>{
     int? selected = optionName;
     setState(() {
       if (optionName == widget.selectedOption) {
-        selected = null;
+        selected = 0;
       }
       widget.selectedOption = selected;
     });
@@ -69,7 +69,7 @@ class _OptionButton extends State<OptionButton>{
             ),
           ),
           SizedBox(
-            height: widget.height * 0.8, // Set a height limit to allow scrolling
+            height: widget.height * 0.83, // Set a height limit to allow scrolling
             child: SingleChildScrollView(
               child: Column(
                 children: [
