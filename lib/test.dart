@@ -1,55 +1,43 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class CheckoutWidget extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('追加項目を表示する例'),
-        ),
-        body: ItemList(),
-      ),
-    );
-  }
+  _CheckoutWidgetState createState() => _CheckoutWidgetState();
 }
 
-class ItemList extends StatefulWidget {
-  @override
-  _ItemListState createState() => _ItemListState();
-}
+class _CheckoutWidgetState extends State<CheckoutWidget> {
+  double totalAmount = 5000; // 仮の合計金額
+  bool isPaid = false;
 
-class _ItemListState extends State<ItemList> {
-  List<String> items = [];
-
-  void _addItem() {
+  void processPayment() {
     setState(() {
-      items.add('項目 ${items.length + 1}');
+      isPaid = true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          '合計金額: ¥${totalAmount.toStringAsFixed(2)}',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 20),
         ElevatedButton(
-          onPressed: _addItem,
-          child: Text('追加項目を表示'),
+          onPressed: isPaid ? null : processPayment,
+          child: Text(isPaid ? '支払い済み' : '支払う'),
         ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(items[index]),
-              );
-            },
+        if (isPaid)
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Text(
+              '支払いが完了しました',
+              style: TextStyle(fontSize: 18, color: Colors.green),
+            ),
           ),
-        ),
       ],
     );
   }
