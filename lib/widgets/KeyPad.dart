@@ -16,7 +16,7 @@ class _KeypadWidgetState extends State<KeypadWidget> {
     '1', '2', '3',
     '4', '5', '6',
     '7', '8', '9',
-    '0', 'C', 'OK',
+    'C', '0', 'OK',
   ];
 
   @override

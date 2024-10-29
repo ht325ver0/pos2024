@@ -60,21 +60,7 @@ class _CartWidgetState extends State<CartWidget> {
                   children: [
                     Text('${product.calculatSubtotal()}円', style:TextStyle(fontSize: 16)),
                     
-                    (widget.edit)?SizedBox(
-                      width: 70, // アイコンボタンの幅
-                      height: 70, // アイコンボタンの高さ
-                      child: IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          setState(() {
-                            product.addPieces(); // 個数を1増やす
-                            widget.onPush();
-                          });
-                        },
-                        iconSize: widget.width * 0.09, // アイコンの見た目のサイズ
-                        padding: EdgeInsets.zero, // パディングをなくす
-                      ),
-                    ):SizedBox(),
+                    
                     (widget.edit)?SizedBox(
                       width: 70, // アイコンボタンの幅
                       height: 70, // アイコンボタンの高さ
@@ -89,6 +75,21 @@ class _CartWidgetState extends State<CartWidget> {
                           });
                         },
                         iconSize: widget.width * 0.08,
+                      ),
+                    ):SizedBox(),
+                    (widget.edit)?SizedBox(
+                      width: 70, // アイコンボタンの幅
+                      height: 70, // アイコンボタンの高さ
+                      child: IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          setState(() {
+                            product.addPieces(); // 個数を1増やす
+                            widget.onPush();
+                          });
+                        },
+                        iconSize: widget.width * 0.09, // アイコンの見た目のサイズ
+                        padding: EdgeInsets.zero, // パディングをなくす
                       ),
                     ):SizedBox(),
                     (widget.edit)?IconButton(

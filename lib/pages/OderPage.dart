@@ -12,7 +12,7 @@ class OderPage extends StatefulWidget {
   OderPage({super.key, required this.title, required this.waitingOder, required this.customerCounter});
 
   final String title;
-  Map<DateTime,List<SelectedProduct>> waitingOder;
+  Map<DateTime,List<SelectedProduct>> waitingOder;//選択肢終わった時に個数
   int customerCounter;
 
   @override
@@ -189,7 +189,8 @@ class _OderPage extends State<OderPage> {
                       child: Row(
                         children: [
                           Text('合計金額:',style: TextStyle(fontSize: 20),),
-                          Text('$totalPrice 円', style: TextStyle(fontSize: 40)),
+                          Text('$totalPrice', style: TextStyle(fontSize: 40)),
+                          Text('円', style: TextStyle(fontSize: 20)),
                           if(totalQuantity > 2) Text('割引 -${totalQuantity ~/ 3 * 50} 円', style: TextStyle(fontSize: 20)),
                         ]
                       ),
@@ -221,9 +222,9 @@ class _OderPage extends State<OderPage> {
                         width: screenWidth * 0.18,
                         height: screenHeight,
                         title: '商品名',
-                        products: productsNameList, //実装後は変数とかにする
+                        products: productsNameList, 
                         selectedProduct: selectedProductObject,
-                        P: productsList,//実装後は変数とかにする
+                        P: productsList,
                         buttonUpdate: updateName,
                       ),
                     ),
@@ -241,7 +242,6 @@ class _OderPage extends State<OderPage> {
                     Container(
                       alignment: const Alignment(0.9,-1),
                       child: Container(
-                       //いっちゃん右(本数とか多分ダイアログとかにすると使いやすい)
                         width: screenWidth * 0.255,
                         height: screenHeight,
                         child: SingleChildScrollView(
@@ -301,6 +301,7 @@ class _OderPage extends State<OderPage> {
                                         );
                                       }else{
                                         addCart();
+                                        selectedProductQuantity = 1;
                                       }
                                       },
                                     child: 

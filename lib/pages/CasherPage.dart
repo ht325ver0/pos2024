@@ -45,22 +45,69 @@ class _CasherPage extends State<CasherPage> {
     });
   }
 
-  void backOderPage(){
+  Future<void> backOderPage() async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('確認',style: TextStyle(fontSize: 24)),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+          ],
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text('以下の内容の注文を確定しますか?',style: TextStyle(fontSize: 24)),
+                Text('必ずこの画面を確認してから次に進んでください.',style: TextStyle(fontSize: 24,color: Color.fromARGB(99, 255, 0, 0))),
+                Row(
+                  children: [
+                    Text('合計金額:',style: TextStyle(fontSize: 18)),
+                    Text('${totalPrice}',style: TextStyle(fontSize: 20)),
+                    Text('円',style: TextStyle(fontSize: 18)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text('預かり金:',style: TextStyle(fontSize: 18)),
+                    Text('${_input}',style: TextStyle(fontSize: 20)),
+                    Text('円',style: TextStyle(fontSize: 18)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text('お釣り:',style: TextStyle(fontSize: 18)),
+                    Text('${int.parse(_input) - totalPrice}',style: TextStyle(fontSize: 20)),
+                    Text('円',style: TextStyle(fontSize: 18)),
+                  ],
+                ),
+              
+              ],
+            ),
+          ),
+          
+
+                            
+        );
+        },
+      );
     setState(() {
       widget.customerCounter += 1;
       widget.waitingOder[DateTime.now()] = widget.selectedProducts;
-      collection.addServedProduct(widget.selectedProducts, widget.customerCounter, totalPrice, _input);
-      widget.selectedProducts = [];
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder:(context){
-          return OderPage(
-            title: '注文ページ',
-            waitingOder: widget.waitingOder,
-            customerCounter: widget.customerCounter,
-          );
-        })
+      collection.addServedProductWithLoading(
+        context, 
+        widget.selectedProducts, 
+        widget.customerCounter, 
+        totalPrice, 
+        _input,
+        widget.waitingOder
       );
+      widget.selectedProducts = [];
+      
     });
   }
 
@@ -74,7 +121,7 @@ class _CasherPage extends State<CasherPage> {
         _input = '';
       } else if (key == 'OK') {
         if(change < 0){
-          showDialog(
+          showDialog(//アラート処理くわえる。
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
