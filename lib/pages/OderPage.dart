@@ -169,6 +169,7 @@ class _OderPage extends State<OderPage> {
             label: const Text('会計',selectionColor: Color.fromARGB(0, 239, 216, 222),style: TextStyle(fontSize: 24),),
           ),
         ],
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         alignment: Alignment.center,
@@ -282,12 +283,12 @@ class _OderPage extends State<OderPage> {
                                       ),
                                     ),
                                     onPressed: (){
-                                      if(selectedProductObject == nullProduct){
+                                      if(selectedProductObject.name == ""){
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              content: Text("カートに商品がありません"),
+                                              content: Text("何も選択されてません"),
                                               actions: [
                                                 TextButton(
                                                   onPressed: () {
@@ -321,7 +322,8 @@ class _OderPage extends State<OderPage> {
             ),   
           ],
         ),
-      ),
+      )
+      /*
       endDrawer: TextButton.icon(
         onPressed: () {},
         icon: const Icon(Icons.icecream),
@@ -339,6 +341,8 @@ class _OderPage extends State<OderPage> {
   
 
       drawer: const Drawer(child:Center(child:Text("注文画面、在庫管理画面(グラフ的なものも欲しい)、金調整"))),
+      */
     );
+    
   }
 }
