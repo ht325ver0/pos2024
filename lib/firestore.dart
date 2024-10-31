@@ -108,7 +108,15 @@ class Firestore{
             child: Column(
               children: [
                 Text('以下の内容の注文を登録しました.',style: TextStyle(fontSize: 20)),
-                Text('呼び出し番号:${number}番',style: TextStyle(fontSize: 18)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('呼び出し番号:',style: TextStyle(fontSize: 18)),
+                    Text('${number}',style: TextStyle(fontSize: 40)),
+                    Text('番',style: TextStyle(fontSize: 18)),
+                  ],
+                ),
+                Text('この番号の番号札をお客様に渡してください(下二桁)',style: TextStyle(fontSize: 18)),
                 Container(
                   color: Color.fromARGB(248, 247, 195, 131),
                   margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -145,7 +153,7 @@ class Firestore{
       );
 
     
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder:(context){
           return OderPage(

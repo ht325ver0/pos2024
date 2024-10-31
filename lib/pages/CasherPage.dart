@@ -46,6 +46,7 @@ class _CasherPage extends State<CasherPage> {
   }
 
   Future<void> backOderPage() async {
+    bool go = false;
     await showDialog(
       context: context,
       builder: (context) {
@@ -53,35 +54,43 @@ class _CasherPage extends State<CasherPage> {
           title: Text('確認',style: TextStyle(fontSize: 24)),
           actions: [
             TextButton(
+              child: Text('キャンセル'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
               child: Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
+                  go = true;
                 },
-              ),
+            ),
+            
           ],
           content: SingleChildScrollView(
             child: Column(
               children: [
                 Text('以下の内容の注文を確定しますか?',style: TextStyle(fontSize: 24)),
-                Text('必ずこの画面を確認してから次に進んでください.',style: TextStyle(fontSize: 24,color: Color.fromARGB(99, 255, 0, 0))),
+                Text('必ずこの画面を確認してから次に進んでください.',style: TextStyle(fontSize: 24,color: Color.fromARGB(255, 255, 0, 0))),
                 Row(
                   children: [
                     Text('合計金額:',style: TextStyle(fontSize: 18)),
-                    Text('${totalPrice}',style: TextStyle(fontSize: 20)),
+                    Text('${totalPrice}',style: TextStyle(fontSize: 40)),
                     Text('円',style: TextStyle(fontSize: 18)),
                   ],
                 ),
                 Row(
                   children: [
                     Text('預かり金:',style: TextStyle(fontSize: 18)),
-                    Text('${_input}',style: TextStyle(fontSize: 20)),
+                    Text('${_input}',style: TextStyle(fontSize: 40)),
                     Text('円',style: TextStyle(fontSize: 18)),
                   ],
                 ),
                 Row(
                   children: [
                     Text('お釣り:',style: TextStyle(fontSize: 18)),
-                    Text('${int.parse(_input) - totalPrice}',style: TextStyle(fontSize: 20)),
+                    Text('${int.parse(_input) - totalPrice}',style: TextStyle(fontSize: 40)),
                     Text('円',style: TextStyle(fontSize: 18)),
                   ],
                 ),
@@ -95,20 +104,22 @@ class _CasherPage extends State<CasherPage> {
         );
         },
       );
-    setState(() {
-      widget.customerCounter += 1;
-      widget.waitingOder[DateTime.now()] = widget.selectedProducts;
-      collection.addServedProductWithLoading(
-        context, 
-        widget.selectedProducts, 
-        widget.customerCounter, 
-        totalPrice, 
-        _input,
-        widget.waitingOder
-      );
-      widget.selectedProducts = [];
-      
-    });
+    if(go){
+      setState(() {
+        widget.customerCounter += 1;
+        widget.waitingOder[DateTime.now()] = widget.selectedProducts;
+        collection.addServedProductWithLoading(
+          context, 
+          widget.selectedProducts, 
+          widget.customerCounter, 
+          totalPrice, 
+          _input,
+          widget.waitingOder
+        );
+        widget.selectedProducts = [];
+        
+      });
+    }
   }
 
   void _handleKeyPress(String key) {
